@@ -3,18 +3,22 @@ package tamagotchi.view;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import tamagotchi.model.Activity;
+import tamagotchi.model.ActivityButton;
+import tamagotchi.model.Pet;
 
 public class ViewBuilder {
 
     private Pane root;
+    private Pet pet;
 
-    public ViewBuilder(Pane root) {
+    public ViewBuilder(Pane root, Pet pet) {
         this.root = root;
+        this.pet = pet;
         setBackground();
         setButtons();
         setStatsViews();
+
     }
 
 
@@ -35,24 +39,25 @@ public class ViewBuilder {
         int count = 0;
 
         for (Activity activity : Activity.values()){
-            ActivityButton activityButton = createActivityButton(activity);
-            addToPane(activityButton);
-            setButtonPosition(HORIZONTAL_POSITION, VERTICAL_POSITION, DISTANCE_BETWEEN_BUTTONS, count, activityButton);
+            ActivityButton activityButton = createActivityButton(activity, pet);
+            ActivityButtonView activityButtonView = new ActivityButtonView(activityButton);
+            addToPane(activityButtonView);
+            setButtonPosition(HORIZONTAL_POSITION, VERTICAL_POSITION, DISTANCE_BETWEEN_BUTTONS, count, activityButtonView);
             count++;
         }
     }
 
-    private ActivityButton createActivityButton(Activity activity) {
-        return new ActivityButton(activity);
+    private ActivityButton createActivityButton(Activity activity, Pet pet) {
+        return new ActivityButton(activity, pet);
     }
 
-    private void addToPane(ActivityButton activityButton) {
-        root.getChildren().add(activityButton);
+    private void addToPane(ActivityButtonView activityButtonViews) {
+        root.getChildren().add(activityButtonViews);
     }
 
-    private void setButtonPosition(double HORIZONTAL_POSITION, double VERTICAL_POSITION, double DISTANCE_BETWEEN_BUTTONS, int count, ActivityButton activityButton) {
-        activityButton.setX(HORIZONTAL_POSITION + count * DISTANCE_BETWEEN_BUTTONS);
-        activityButton.setY(VERTICAL_POSITION);
+    private void setButtonPosition(double horizontalPos, double verticalPos, double distBetween, int count, ActivityButtonView activityButtonView) {
+        activityButtonView.setX(horizontalPos + count * distBetween);
+        activityButtonView.setY(verticalPos);
     }
 
     private void setStatsViews(){

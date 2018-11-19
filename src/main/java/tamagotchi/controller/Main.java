@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import tamagotchi.model.Pet;
 import tamagotchi.view.ViewBuilder;
 
 
@@ -24,7 +25,8 @@ public class Main extends Application {
 
 
         Pane root = new Pane();
-        new ViewBuilder(root);
+        Pet pet = new Pet();
+        new ViewBuilder(root, pet);
         Scene scene = new Scene(root, WIDTH, HEIGHT);
 
         primaryStage.setScene(scene);

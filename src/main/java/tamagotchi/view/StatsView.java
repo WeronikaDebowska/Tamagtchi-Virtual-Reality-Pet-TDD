@@ -1,6 +1,7 @@
 package tamagotchi.view;
 
 public enum StatsView {
+
     HUNGER("hunger.png"),
     HAPPINESS("happiness.png"),
     HEALTH("health.png");

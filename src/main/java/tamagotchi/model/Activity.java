@@ -18,25 +18,25 @@ public enum Activity {
     }}, FEED_WITH_BONES_VIEW),
 
     PLAY(new HashMap<Stats, Integer>(){{
-        put(HUNGER, 20);
-        put(HAPPINESS, 30);
-        put(HEALTH, -20);
+        put(HUNGER, 15);
+        put(HAPPINESS, 20);
+        put(HEALTH, -10);
     }}, PLAY_VIEW),
 
     GO_FOR_A_WALK(new HashMap<Stats, Integer>(){{
         put(HUNGER, 10);
         put(HAPPINESS, 20);
-        put(HEALTH, -10);
+        put(HEALTH, -5);
     }}, GO_FOR_A_WALK_VIEW),
 
     HEAL(new HashMap<Stats, Integer>(){{
         put(HEALTH, 30);
-        put(HAPPINESS,-20);
+        put(HAPPINESS, -10);
     }}, HEAL_VIEW),
 
     WASH(new HashMap<Stats, Integer>(){{
         put(HEALTH,10);
-        put(HAPPINESS,-35);
+        put(HAPPINESS, -25);
     }}, WASH_VIEW);
 
     private HashMap<Stats, Integer> activityResult;

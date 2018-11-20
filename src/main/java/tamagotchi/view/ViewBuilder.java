@@ -2,6 +2,7 @@ package tamagotchi.view;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import tamagotchi.model.Activity;
@@ -9,26 +10,36 @@ import tamagotchi.model.ActivityButton;
 import tamagotchi.model.Pet;
 import tamagotchi.model.Stats;
 
+
 public class ViewBuilder {
 
     private Pane root;
     private Pet pet;
 
-    private Pane statsInNumbers = new Pane();
-    private Pane petPane = new Pane();
+    private Text actualHunger;
+    private Text actualHappiness;
 
+    private Text actualHealth;
+
+    private AnchorPane petPane = new AnchorPane();
 
     public ViewBuilder(Pane root, Pet pet) {
         this.root = root;
         this.pet = pet;
+        actualHealth = textifyIntValue(pet.getHealth());
+        actualHappiness = textifyIntValue(pet.getHappiness());
+        actualHunger = textifyIntValue(pet.getHunger());
+
+        createView(root);
+    }
+
+    private void createView(Pane root) {
         showBackground();
         showButtons();
         showStatsViews();
-        root.getChildren().add(statsInNumbers);
-        root.getChildren().add(petPane);
         showStatsInNumbers();
+        root.getChildren().add(petPane);
         showPet();
-
     }
 
 
@@ -79,7 +90,6 @@ public class ViewBuilder {
 
         int count = 0;
 
-
         for (Stats stat : Stats.values()){
             ImageView statImage = createStatImageView(stat.getSTAT_VIEW());
             root.getChildren().add(statImage);          // TODO refactor to generic method addToPane(imageView);
@@ -88,31 +98,29 @@ public class ViewBuilder {
             statImage.setY(VERTICAL_POSITION);
 
             count++;
-
         }
     }
 
     public void showStatsInNumbers() {
 
-        statsInNumbers.getChildren().clear();
-
         final double TEXT_VERTICAL_POSITION = 90;
-        final double TEXT_HORIZONTAL_POSITION = 535;
-
+        final double TEXT_HORIZONTAL_POSITION = 537;
         final double DISTANCE_BETWEEN_BUTTONS = 100;
 
-        int count = 0;
+        root.getChildren().add(actualHunger);
+        root.getChildren().add(actualHappiness);
+        root.getChildren().add(actualHealth);
+        actualHunger.setX(TEXT_HORIZONTAL_POSITION + 0 * DISTANCE_BETWEEN_BUTTONS);
+        actualHunger.setY(TEXT_VERTICAL_POSITION);
+        actualHappiness.setX(TEXT_HORIZONTAL_POSITION + 1 * DISTANCE_BETWEEN_BUTTONS);
+        actualHappiness.setY(TEXT_VERTICAL_POSITION);
+        actualHealth.setX(TEXT_HORIZONTAL_POSITION + 2 * DISTANCE_BETWEEN_BUTTONS);
+        actualHealth.setY(TEXT_VERTICAL_POSITION);
 
-        for (Stats stat : Stats.values()) {
 
-            Text actualStat;
-            actualStat = new Text(Integer.toString(pet.getActualStat(stat)) + " " + "%");
-            statsInNumbers.getChildren().add(actualStat);
-            actualStat.setX(TEXT_HORIZONTAL_POSITION + count * DISTANCE_BETWEEN_BUTTONS);
-            actualStat.setY(TEXT_VERTICAL_POSITION);
-            count++;
-        }
+//        }
     }
+
 
     private ImageView createStatImageView(StatsView stat) {
         return new ImageView(new Image(stat.getImageUrl()));
@@ -128,5 +136,23 @@ public class ViewBuilder {
         petView.setY(270);
     }
 
+    public void showGameOver() {
+        System.out.println("GAME OVER");
+    }
 
+    private Text textifyIntValue(int intValue) {
+        return new Text(((Integer) intValue).toString());
+    }
+
+    public void setActualHunger(int actualHunger) {
+        this.actualHunger.setText(((Integer) actualHunger).toString());
+    }
+
+    public void setActualHappiness(int actualHappiness) {
+        this.actualHappiness.setText(((Integer) actualHappiness).toString());
+    }
+
+    public void setActualHealth(int actualHealth) {
+        this.actualHealth.setText(((Integer) actualHealth).toString());
+    }
 }

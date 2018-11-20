@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import tamagotchi.model.Pet;
+import tamagotchi.model.Stats;
 import tamagotchi.view.ViewBuilder;
 
 
@@ -23,12 +24,17 @@ public class Main extends Application {
         final int WIDTH = 840;             //window width
         final int HEIGHT = 560;             //window height
 
-
         Pane root = new Pane();
         Pet pet = new Pet();
         ViewBuilder viewBuilder = new ViewBuilder(root, pet);
         pet.setViewBuilder(viewBuilder);
+        for (Stats stats : Stats.values()) {
+            StatsChangesController statsChangesController = new StatsChangesController(stats, pet);
+            statsChangesController.setViewBuilder(viewBuilder);
+            statsChangesController.updateStats();
+        }
         Scene scene = new Scene(root, WIDTH, HEIGHT);
+
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Tamagotchi");

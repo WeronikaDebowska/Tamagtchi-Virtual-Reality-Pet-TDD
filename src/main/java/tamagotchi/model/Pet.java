@@ -28,41 +28,52 @@ public class Pet {
 
 
     public void updatePet(Activity activity){
-        calculateStats(activity);
-        viewBuilder.showStatsInNumbers();
-        updatePetState();
-        viewBuilder.showPet();
+        if (isPetAlive()) {
+            calculateStats(activity);
+            viewBuilder.showStatsInNumbers();
+            updatePetState();
+            viewBuilder.showPet();
+        }
     }
 
     void calculateStats(Activity activity) {
         for (HashMap.Entry<Stats,Integer> singleResult : activity.getResults().entrySet()){
-            updatePetStat(singleResult.getKey(), singleResult.getValue());
+            calculateSinglePetStat(singleResult.getKey(), singleResult.getValue());
         }
     }
 
-    private void updatePetStat(Stats stats, Integer points){
+    public void calculateSinglePetStat(Stats stats, Integer points) {
         switch (stats){
             case HAPPINESS:
-                if (getHappiness() >= 0 && getHappiness() <= 100) {
-                    setHappiness(max(min(getHappiness() + points, Stats.HAPPINESS.getINITIAL_VALUES()), 0));
+                if (happiness >= 0 && happiness <= 100) {       //points in percents
+                    happiness = (max(min(getHappiness() + points, Stats.HAPPINESS.getINITIAL_VALUES()), 0));
                 }
                 break;
             case HEALTH:
-                if (getHealth() >= 0 && getHealth() <= 100) {
-                    setHealth(min(getHealth() + points, Stats.HEALTH.getINITIAL_VALUES()));
-
+                if (health >= 0 && health <= 100) {
+                    health = (min(getHealth() + points, Stats.HEALTH.getINITIAL_VALUES()));
                 }
                 break;
             case HUNGER:
-                if (getHunger() >= 0 && getHunger() < 100 ){
-                    setHunger(min(max(getHunger() + points, Stats.HUNGER.getINITIAL_VALUES()), 100));
+                if (hunger >= 0 && hunger < 100) {
+                    hunger = (min(max(getHunger() + points, Stats.HUNGER.getINITIAL_VALUES()), 100));
                 }
                 break;
         }
+        checkEndGame();
     }
 
+    private void checkEndGame() {
+        if (!isPetAlive()) {
+            viewBuilder.showGameOver();
+        }
+    }
 
-    void updatePetState(){
+    public boolean isPetAlive() {
+        return (happiness != 0 && health != 0 && hunger != 100);
+    }
+
+    public void updatePetState() {
         int averageState = (getHappiness() + (100 - getHunger()) + getHealth())/(Stats.values().length);
         System.out.println(averageState);
 

@@ -1,8 +1,6 @@
 package tamagotchi.model;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import tamagotchi.view.Executive;
 
 
 public class ActivityButton extends ImageView implements Executive {
@@ -19,7 +17,7 @@ public class ActivityButton extends ImageView implements Executive {
     @Override
     public void execute() {
         System.out.println(activity.toString());
-        pet.updateStats(activity);
+        pet.updatePet(activity);
 //        activity.update();
 
 

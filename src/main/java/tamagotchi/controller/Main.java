@@ -26,7 +26,8 @@ public class Main extends Application {
 
         Pane root = new Pane();
         Pet pet = new Pet();
-        new ViewBuilder(root, pet);
+        ViewBuilder viewBuilder = new ViewBuilder(root, pet);
+        pet.setViewBuilder(viewBuilder);
         Scene scene = new Scene(root, WIDTH, HEIGHT);
 
         primaryStage.setScene(scene);

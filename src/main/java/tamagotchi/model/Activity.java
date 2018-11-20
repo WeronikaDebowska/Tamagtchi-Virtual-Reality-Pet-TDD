@@ -20,21 +20,23 @@ public enum Activity {
     PLAY(new HashMap<Stats, Integer>(){{
         put(HUNGER, 20);
         put(HAPPINESS, 30);
+        put(HEALTH, -20);
     }}, PLAY_VIEW),
 
     GO_FOR_A_WALK(new HashMap<Stats, Integer>(){{
         put(HUNGER, 10);
         put(HAPPINESS, 20);
+        put(HEALTH, -10);
     }}, GO_FOR_A_WALK_VIEW),
 
     HEAL(new HashMap<Stats, Integer>(){{
-        put(HEALTH, 50);
+        put(HEALTH, 30);
         put(HAPPINESS,-20);
     }}, HEAL_VIEW),
 
     WASH(new HashMap<Stats, Integer>(){{
         put(HEALTH,10);
-        put(HAPPINESS,-10);
+        put(HAPPINESS,-35);
     }}, WASH_VIEW);
 
     private HashMap<Stats, Integer> activityResult;

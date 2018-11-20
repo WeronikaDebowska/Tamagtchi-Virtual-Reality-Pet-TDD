@@ -2,7 +2,6 @@ package tamagotchi.view;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import tamagotchi.model.Activity;
 import tamagotchi.model.ActivityButton;
 
 public class ActivityButtonView extends ImageView {
@@ -15,6 +14,7 @@ public class ActivityButtonView extends ImageView {
         this.activityButton = activityButton;
         this.setOnMouseClicked(lambda -> {
             activityButton.execute();
+
         });
     }
 }

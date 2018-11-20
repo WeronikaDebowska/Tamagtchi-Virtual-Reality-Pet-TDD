@@ -2,9 +2,9 @@ package tamagotchi.view;
 
 public enum StatsView {
 
-    HUNGER("hunger.png"),
-    HAPPINESS("happiness.png"),
-    HEALTH("health.png");
+    HUNGER_VIEW("hunger.png"),
+    HAPPINESS_VIEW("happiness.png"),
+    HEALTH_VIEW("health.png");
 
     private String imageUrl;
 
@@ -15,4 +15,5 @@ public enum StatsView {
     public String getImageUrl() {
         return imageUrl;
     }
+
 }

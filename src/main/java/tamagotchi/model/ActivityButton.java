@@ -5,29 +5,21 @@ import javafx.scene.image.ImageView;
 
 public class ActivityButton extends ImageView implements Executive {
 
-    private Activity activity;
-    private Pet pet;
+    final private Activity ACTIVITY;
+    final private Pet PET;
 
     public ActivityButton(Activity activity, Pet pet){
 
-        this.activity = activity;
-        this.pet = pet;
+        this.ACTIVITY = activity;
+        this.PET = pet;
     }
 
     @Override
     public void execute() {
-        System.out.println(activity.toString());
-        pet.updatePet(activity);
-//        activity.update();
-
-
-    }
-
-    public void setPet(Pet pet) {
-        this.pet = pet;
+        PET.updatePet(ACTIVITY);
     }
 
     public Activity getActivity() {
-        return activity;
+        return ACTIVITY;
     }
 }

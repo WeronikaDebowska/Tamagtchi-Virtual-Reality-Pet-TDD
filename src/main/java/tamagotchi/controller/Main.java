@@ -27,12 +27,8 @@ public class Main extends Application {
         Pane root = new Pane();
         Pet pet = new Pet();
         ViewBuilder viewBuilder = new ViewBuilder(root, pet);
-        pet.setViewBuilder(viewBuilder);
-        for (Stats stats : Stats.values()) {
-            StatsChangesController statsChangesController = new StatsChangesController(stats, pet);
-            statsChangesController.setViewBuilder(viewBuilder);
-            statsChangesController.updateStats();
-        }
+        attachViewBuilderToPet(pet, viewBuilder);
+        createControllersForAllStats(pet, viewBuilder);
         Scene scene = new Scene(root, WIDTH, HEIGHT);
 
 
@@ -41,5 +37,17 @@ public class Main extends Application {
         primaryStage.show();
 
 
+    }
+
+    private void attachViewBuilderToPet(Pet pet, ViewBuilder viewBuilder) {
+        pet.setViewBuilder(viewBuilder);
+    }
+
+    private void createControllersForAllStats(Pet pet, ViewBuilder viewBuilder) {
+        for (Stats stats : Stats.values()) {
+            StatsChangesController statsChangesController = new StatsChangesController(stats, pet);
+            statsChangesController.setViewBuilder(viewBuilder);
+            statsChangesController.updateStats();
+        }
     }
 }

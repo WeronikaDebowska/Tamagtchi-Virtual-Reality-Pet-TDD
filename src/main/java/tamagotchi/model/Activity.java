@@ -39,21 +39,20 @@ public enum Activity {
         put(HAPPINESS, -25);
     }}, WASH_VIEW);
 
-    private HashMap<Stats, Integer> activityResult;
-
-    private ActivityButtonViewsEnum image;
+    final private HashMap<Stats, Integer> ACTIVITY_RESULT;
+    final private ActivityButtonViewsEnum ACTIVITY_BUTTON_IMAGE;
 
     Activity(HashMap<Stats, Integer> activityResult, ActivityButtonViewsEnum activityButtonViews) {
-        this.activityResult = activityResult;
-        this.image = activityButtonViews;
+        this.ACTIVITY_RESULT = activityResult;
+        this.ACTIVITY_BUTTON_IMAGE = activityButtonViews;
     }
 
     public HashMap<Stats,Integer> getResults() {
-        return activityResult;
+        return ACTIVITY_RESULT;
     }
 
     public String getImage() {
-        return image.getImageUrl();
+        return ACTIVITY_BUTTON_IMAGE.getImageUrl();
     }
 
 }

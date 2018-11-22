@@ -2,26 +2,24 @@ package tamagotchi.view;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import tamagotchi.model.Activity;
-import tamagotchi.model.ActivityButton;
-import tamagotchi.model.Pet;
-import tamagotchi.model.Stats;
+import tamagotchi.model.*;
 
 
 public class ViewBuilder {
 
     private Pane root;
     private Pet pet;
+    private PetView petView;
 
     private Text actualHunger;
     private Text actualHappiness;
-
     private Text actualHealth;
 
-    private AnchorPane petPane = new AnchorPane();
+    private Text[] actualStats = new Text[]{actualHappiness, actualHealth, actualHunger};
+
 
     public ViewBuilder(Pane root, Pet pet) {
         this.root = root;
@@ -29,17 +27,16 @@ public class ViewBuilder {
         actualHealth = textifyIntValue(pet.getHealth());
         actualHappiness = textifyIntValue(pet.getHappiness());
         actualHunger = textifyIntValue(pet.getHunger());
-
-        createView(root);
+        createView();
     }
 
-    private void createView(Pane root) {
+    private void createView() {
         showBackground();
         showButtons();
         showStatsViews();
         showStatsInNumbers();
-        root.getChildren().add(petPane);
-        showPet();
+        this.petView = showPet();
+        pet.setPetView(petView);
     }
 
 
@@ -103,22 +100,23 @@ public class ViewBuilder {
 
     public void showStatsInNumbers() {
 
+        root.getChildren().add(actualHunger);
+        root.getChildren().add(actualHappiness);
+        root.getChildren().add(actualHealth);
+
         final double TEXT_VERTICAL_POSITION = 90;
         final double TEXT_HORIZONTAL_POSITION = 537;
         final double DISTANCE_BETWEEN_BUTTONS = 100;
 
-        root.getChildren().add(actualHunger);
-        root.getChildren().add(actualHappiness);
-        root.getChildren().add(actualHealth);
         actualHunger.setX(TEXT_HORIZONTAL_POSITION + 0 * DISTANCE_BETWEEN_BUTTONS);
+        actualHunger.setFill(Color.FORESTGREEN);
         actualHunger.setY(TEXT_VERTICAL_POSITION);
         actualHappiness.setX(TEXT_HORIZONTAL_POSITION + 1 * DISTANCE_BETWEEN_BUTTONS);
+        actualHappiness.setFill(Color.FORESTGREEN);
         actualHappiness.setY(TEXT_VERTICAL_POSITION);
         actualHealth.setX(TEXT_HORIZONTAL_POSITION + 2 * DISTANCE_BETWEEN_BUTTONS);
+        actualHealth.setFill(Color.FORESTGREEN);
         actualHealth.setY(TEXT_VERTICAL_POSITION);
-
-
-//        }
     }
 
 
@@ -126,33 +124,47 @@ public class ViewBuilder {
         return new ImageView(new Image(stat.getImageUrl()));
     }
 
-    public void showPet(){
+    public PetView showPet() {
 
-        petPane.getChildren().clear();
+        PetView petView = new PetView(pet);
+        ImageView petImageView = petView.getPetImageView();
+        root.getChildren().add(petImageView);
+        petImageView.setX(190);
+        petImageView.setY(270);
 
-        ImageView petView = new PetView(pet).getPetImageView();
-        petPane.getChildren().add(petView);
-        petView.setX(190);
-        petView.setY(270);
+        return petView;
+    }
+
+    public void updatePetView() {
+        petView.updatePetImageView();
     }
 
     public void showGameOver() {
         System.out.println("GAME OVER");
+        Image gameOverImg = new Image("game-over.png");
+        ImageView gameOver = new ImageView(gameOverImg);
+        root.getChildren().add(gameOver);
     }
 
     private Text textifyIntValue(int intValue) {
         return new Text(((Integer) intValue).toString());
     }
 
-    public void setActualHunger(int actualHunger) {
-        this.actualHunger.setText(((Integer) actualHunger).toString());
+    public void setActualHunger() {
+        this.actualHunger.setText(((Integer) pet.getHunger()).toString());
     }
 
-    public void setActualHappiness(int actualHappiness) {
-        this.actualHappiness.setText(((Integer) actualHappiness).toString());
+    public void setActualHappiness() {
+        this.actualHappiness.setText(((Integer) pet.getHappiness()).toString());
     }
 
-    public void setActualHealth(int actualHealth) {
-        this.actualHealth.setText(((Integer) actualHealth).toString());
+    public void setActualHealth() {
+        this.actualHealth.setText(((Integer) pet.getHealth()).toString());
+    }
+
+    public void updateStatsInNumbers() {
+        setActualHappiness();
+        setActualHealth();
+        setActualHunger();
     }
 }

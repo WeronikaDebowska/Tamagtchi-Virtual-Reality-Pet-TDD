@@ -36,21 +36,22 @@ public class StatsChangesController {
                         pet.calculateSinglePetStat(stat, stat.getPOINTS_INCREASEMENT());
                         switch (stat) {
                             case HAPPINESS:
-                                viewBuilder.setActualHappiness(pet.getHappiness());
+                                viewBuilder.setActualHappiness();
                                 break;
                             case HUNGER:
-                                viewBuilder.setActualHunger(pet.getHunger());
+                                viewBuilder.setActualHunger();
                                 break;
                             case HEALTH:
-                                viewBuilder.setActualHealth(pet.getHealth());
+                                viewBuilder.setActualHealth();
                                 break;
                         }
-                        pet.updatePetState();
                     }
+                    pet.updatePetState();
+                    viewBuilder.updatePetView();
                 }
             };
 
-            long initialDelay = 2000;
+            long initialDelay = 5000;
             gameUpdating = scheduler.scheduleAtFixedRate(gameUpdate, initialDelay, stat.getTIME_INTERVAL_MILISEC(), MILLISECONDS);
         }
     }

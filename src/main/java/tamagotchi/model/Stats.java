@@ -1,6 +1,5 @@
 package tamagotchi.model;
 
-import javafx.scene.text.Text;
 import tamagotchi.view.StatsView;
 
 public enum Stats {

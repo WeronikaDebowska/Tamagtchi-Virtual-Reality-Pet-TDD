@@ -1,5 +1,6 @@
 package tamagotchi.model;
 
+import tamagotchi.view.PetView;
 import tamagotchi.view.ViewBuilder;
 
 import java.util.HashMap;
@@ -14,25 +15,36 @@ public class Pet {
     private int happiness;
     private int health;
 
+    private boolean isPetAlive;
+
     private PetState petState;
+    private PetView petView;
+
+    private HashMap<Stats, Integer> actualStats = new HashMap<Stats, Integer>() {{
+        put(Stats.HAPPINESS, happiness);
+        put(Stats.HEALTH, health);
+        put(Stats.HUNGER, hunger);
+
+    }};
 
     private ViewBuilder viewBuilder;
-
     public Pet() {
         this.hunger = Stats.HUNGER.getINITIAL_VALUES();
         this.happiness = Stats.HAPPINESS.getINITIAL_VALUES();
         this.health = Stats.HEALTH.getINITIAL_VALUES();
-        this.petState = PetState.NORMAL;
+        this.petState = updatePetState();
+        this.isPetAlive = true;
     }
 
-
-
-    public void updatePet(Activity activity){
-        if (isPetAlive()) {
+    void updatePet(Activity activity) {
+        isPetStillAlive();
+        if (isPetAlive) {
             calculateStats(activity);
-            viewBuilder.showStatsInNumbers();
             updatePetState();
-            viewBuilder.showPet();
+            viewBuilder.updateStatsInNumbers();
+            viewBuilder.updatePetView();
+        } else {
+            viewBuilder.showGameOver();
         }
     }
 
@@ -45,35 +57,46 @@ public class Pet {
     public void calculateSinglePetStat(Stats stats, Integer points) {
         switch (stats){
             case HAPPINESS:
-                if (happiness >= 0 && happiness <= 100) {       //points in percents
-                    happiness = (max(min(getHappiness() + points, Stats.HAPPINESS.getINITIAL_VALUES()), 0));
-                }
+                updateHappiness(points);
                 break;
             case HEALTH:
-                if (health >= 0 && health <= 100) {
-                    health = (min(getHealth() + points, Stats.HEALTH.getINITIAL_VALUES()));
-                }
+                updateHealth(points);
                 break;
             case HUNGER:
-                if (hunger >= 0 && hunger < 100) {
-                    hunger = (min(max(getHunger() + points, Stats.HUNGER.getINITIAL_VALUES()), 100));
-                }
+                updateHunger(points);
                 break;
         }
-        checkEndGame();
     }
 
-    private void checkEndGame() {
-        if (!isPetAlive()) {
-            viewBuilder.showGameOver();
+    private void updateHunger(Integer points) {
+        if (hunger >= 0 && hunger <= 100) {
+            hunger = (min(max(getHunger() + points, Stats.HUNGER.getINITIAL_VALUES()), 100));
         }
+    }
+
+    private void updateHealth(Integer points) {
+        if (health >= 0 && health <= 100) {
+            health = (min(getHealth() + points, Stats.HEALTH.getINITIAL_VALUES()));
+        }
+    }
+
+    private void updateHappiness(Integer points) {
+        if (happiness >= 0 && happiness <= 100) {       //points in percents
+            happiness = (max(min(getHappiness() + points, Stats.HAPPINESS.getINITIAL_VALUES()), 0));
+        }
+    }
+
+    private void isPetStillAlive() {
+        isPetAlive = happiness != 0 && health != 0 && hunger != 100;
+        System.out.println(isPetAlive);
     }
 
     public boolean isPetAlive() {
-        return (happiness != 0 && health != 0 && hunger != 100);
+        return isPetAlive;
     }
 
-    public void updatePetState() {
+    public PetState updatePetState() {
+        isPetStillAlive();
         int averageState = (getHappiness() + (100 - getHunger()) + getHealth())/(Stats.values().length);
         System.out.println(averageState);
 
@@ -81,7 +104,7 @@ public class Pet {
         boolean isPetSad = getHappiness() < Stats.HAPPINESS.getCRITICAL_VALUES();
         boolean isPetSick = getHealth() < Stats.HEALTH.getCRITICAL_VALUES();
 
-        boolean isPetInAgony = averageState < 20;
+        boolean isPetInAgony = happiness <= 10 || health <= 10 || hunger >= 90;
         boolean isPetUnhappy = averageState >= 20 && averageState < 70;
         boolean isPetNormal = averageState >= 70 && averageState < 95;
         boolean isPetDelighted = averageState >= 95;
@@ -94,21 +117,13 @@ public class Pet {
             petState = PetState.NORMAL;
         } else if ((isPetHungry || isPetSick || isPetSad || isPetUnhappy) ){
             petState = PetState.UNHAPPY;
+        } else {
+            viewBuilder.showGameOver();
         }
 
         System.out.println(petState);
-    }
 
-    public int getActualStat(Stats stat){
-        switch (stat){
-            case HAPPINESS:
-                return getHappiness();
-            case HUNGER:
-                return getHunger();
-            case HEALTH:
-                return getHealth();
-        }
-        return 0;
+        return petState;
     }
 
     public void setViewBuilder(ViewBuilder viewBuilder) {
@@ -123,7 +138,7 @@ public class Pet {
         return hunger;
     }
 
-    public void setHunger(int hunger) {
+    void setHunger(int hunger) {
         this.hunger = hunger;
     }
 
@@ -131,7 +146,7 @@ public class Pet {
         return happiness;
     }
 
-    public void setHappiness(int happiness) {
+    void setHappiness(int happiness) {
         this.happiness = happiness;
     }
 
@@ -139,10 +154,11 @@ public class Pet {
         return health;
     }
 
-    public void setHealth(int health) {
+    void setHealth(int health) {
         this.health = health;
     }
 
-
-
+    public void setPetView(PetView petView) {
+        this.petView = petView;
+    }
 }

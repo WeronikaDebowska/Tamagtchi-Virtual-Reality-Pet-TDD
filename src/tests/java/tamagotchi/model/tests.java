@@ -1,8 +1,5 @@
 package tamagotchi.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import tamagotchi.controller.*;
-import tamagotchi.model.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +25,7 @@ class Tests {
         pet.setHunger(initialHunger);
 
         //when
-        Activity activity = Activity.FEED_WITH_MEAT;
+        ActivityEnum activity = ActivityEnum.FEED_WITH_MEAT;
 
         //then
         pet.calculateStats(activity);
@@ -52,7 +49,7 @@ class Tests {
         pet.setHappiness(initialHappines);
 
         //when
-        Activity activity = Activity.FEED_WITH_BONES;
+        ActivityEnum activity = ActivityEnum.FEED_WITH_BONES;
 
         //then
         pet.calculateStats(activity);
@@ -78,7 +75,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.PLAY;
+        ActivityEnum activity = ActivityEnum.PLAY;
 
         //then
         pet.calculateStats(activity);
@@ -104,7 +101,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.GO_FOR_A_WALK;
+        ActivityEnum activity = ActivityEnum.GO_FOR_A_WALK;
 
         //then
         pet.calculateStats(activity);
@@ -130,7 +127,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.HEAL;
+        ActivityEnum activity = ActivityEnum.HEAL;
 
         //then
         pet.calculateStats(activity);
@@ -156,7 +153,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.WASH;
+        ActivityEnum activity = ActivityEnum.WASH;
 
         //then
         pet.calculateStats(activity);
@@ -179,7 +176,7 @@ class Tests {
         pet.setHunger(initialHunger);
 
         //when
-        Activity activity = Activity.FEED_WITH_MEAT;
+        ActivityEnum activity = ActivityEnum.FEED_WITH_MEAT;
 
         //then
         pet.calculateStats(activity);
@@ -203,7 +200,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.FEED_WITH_BONES;
+        ActivityEnum activity = ActivityEnum.FEED_WITH_BONES;
 
         //then
         pet.calculateStats(activity);
@@ -229,7 +226,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.PLAY;
+        ActivityEnum activity = ActivityEnum.PLAY;
 
         //then
         pet.calculateStats(activity);
@@ -255,7 +252,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.GO_FOR_A_WALK;
+        ActivityEnum activity = ActivityEnum.GO_FOR_A_WALK;
 
         //then
         pet.calculateStats(activity);
@@ -281,7 +278,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.HEAL;
+        ActivityEnum activity = ActivityEnum.HEAL;
 
         //then
         pet.calculateStats(activity);
@@ -307,7 +304,7 @@ class Tests {
         pet.setHappiness(initialHappiness);
 
         //when
-        Activity activity = Activity.WASH;
+        ActivityEnum activity = ActivityEnum.WASH;
 
         //then
         pet.calculateStats(activity);

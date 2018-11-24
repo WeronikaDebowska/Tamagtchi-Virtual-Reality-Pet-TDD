@@ -1,5 +1,6 @@
 package tamagotchi.controller;
 
+
 import tamagotchi.model.Pet;
 import tamagotchi.model.Stats;
 import tamagotchi.view.ViewBuilder;
@@ -45,9 +46,9 @@ public class StatsChangesController {
                                 viewBuilder.setActualHealth();
                                 break;
                         }
+
+                        pet.updatePet();
                     }
-                    pet.updatePetState();
-                    viewBuilder.updatePetView();
                 }
             };
 

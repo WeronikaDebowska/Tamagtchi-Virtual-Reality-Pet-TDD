@@ -6,6 +6,7 @@ public enum PetState {
     UNHAPPY,
     SLEEPING,
     DYING,
+    DEAD,
 
 }
 

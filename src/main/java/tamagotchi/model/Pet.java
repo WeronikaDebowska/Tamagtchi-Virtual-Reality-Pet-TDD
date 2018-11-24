@@ -15,8 +15,6 @@ public class Pet {
     private int happiness;
     private int health;
 
-    private boolean isPetAlive;
-
     private PetState petState;
     private PetView petView;
 
@@ -33,22 +31,20 @@ public class Pet {
         this.happiness = Stats.HAPPINESS.getINITIAL_VALUES();
         this.health = Stats.HEALTH.getINITIAL_VALUES();
         this.petState = updatePetState();
-        this.isPetAlive = true;
     }
 
-    void updatePet(Activity activity) {
-        isPetStillAlive();
-        if (isPetAlive) {
-            calculateStats(activity);
-            updatePetState();
+    public void updatePet() {
+        updatePetState();
+        if (petState != PetState.DEAD) {
             viewBuilder.updateStatsInNumbers();
             viewBuilder.updatePetView();
         } else {
+            System.out.println("KONEC");
             viewBuilder.showGameOver();
         }
     }
 
-    void calculateStats(Activity activity) {
+    void calculateStats(ActivityEnum activity) {
         for (HashMap.Entry<Stats,Integer> singleResult : activity.getResults().entrySet()){
             calculateSinglePetStat(singleResult.getKey(), singleResult.getValue());
         }
@@ -86,19 +82,16 @@ public class Pet {
         }
     }
 
-    private void isPetStillAlive() {
-        isPetAlive = happiness != 0 && health != 0 && hunger != 100;
-        System.out.println(isPetAlive);
-    }
-
     public boolean isPetAlive() {
-        return isPetAlive;
+        return petState != PetState.DEAD;
     }
 
     public PetState updatePetState() {
-        isPetStillAlive();
-        int averageState = (getHappiness() + (100 - getHunger()) + getHealth())/(Stats.values().length);
+
+        int averageState = calculateAverageState();
         System.out.println(averageState);
+
+        boolean isPetDead = happiness == 0 || health == 0 || hunger == 100;
 
         boolean isPetHungry = getHunger() > Stats.HUNGER.getCRITICAL_VALUES();
         boolean isPetSad = getHappiness() < Stats.HAPPINESS.getCRITICAL_VALUES();
@@ -109,7 +102,9 @@ public class Pet {
         boolean isPetNormal = averageState >= 70 && averageState < 95;
         boolean isPetDelighted = averageState >= 95;
 
-        if (isPetInAgony)  {
+        if (isPetDead) {
+            petState = PetState.DEAD;
+        } else if (isPetInAgony) {
             petState = PetState.DYING;
         } else if(isPetDelighted) {
             petState = PetState.DELIGHTED;
@@ -117,13 +112,14 @@ public class Pet {
             petState = PetState.NORMAL;
         } else if ((isPetHungry || isPetSick || isPetSad || isPetUnhappy) ){
             petState = PetState.UNHAPPY;
-        } else {
-            viewBuilder.showGameOver();
         }
-
         System.out.println(petState);
 
         return petState;
+    }
+
+    private int calculateAverageState() {
+        return (getHappiness() + (100 - getHunger()) + getHealth()) / (Stats.values().length);
     }
 
     public void setViewBuilder(ViewBuilder viewBuilder) {

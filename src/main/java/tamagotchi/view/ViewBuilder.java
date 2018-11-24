@@ -18,6 +18,8 @@ public class ViewBuilder {
     private Text actualHappiness;
     private Text actualHealth;
 
+    private ImageView sceneBackground;
+
     private Text[] actualStats = new Text[]{actualHappiness, actualHealth, actualHunger};
 
 
@@ -43,7 +45,7 @@ public class ViewBuilder {
     private void showBackground() {
 
         Image background = new Image("background.png");
-        ImageView sceneBackground = new ImageView(background);
+        sceneBackground = new ImageView(background);
         root.getChildren().add(sceneBackground);
     }
 
@@ -56,8 +58,8 @@ public class ViewBuilder {
 
         int count = 0;
 
-        for (Activity activity : Activity.values()){
-            ActivityButton activityButton = createActivityButton(activity, pet);
+        for (ActivityEnum activity : ActivityEnum.values()) {
+            Activity activityButton = createActivityButton(activity, pet);
             ActivityButtonView activityButtonView = new ActivityButtonView(activityButton);
             addToPane(activityButtonView);
             setButtonPosition(HORIZONTAL_POSITION, VERTICAL_POSITION, DISTANCE_BETWEEN_BUTTONS, count, activityButtonView);
@@ -65,8 +67,8 @@ public class ViewBuilder {
         }
     }
 
-    private ActivityButton createActivityButton(Activity activity, Pet pet) {
-        return new ActivityButton(activity, pet);
+    private Activity createActivityButton(ActivityEnum activity, Pet pet) {
+        return new Activity(activity, pet);
     }
 
     private void addToPane(ActivityButtonView activityButtonViews) {
@@ -142,8 +144,7 @@ public class ViewBuilder {
     public void showGameOver() {
         System.out.println("GAME OVER");
         Image gameOverImg = new Image("game-over.png");
-        ImageView gameOver = new ImageView(gameOverImg);
-        root.getChildren().add(gameOver);
+        sceneBackground.setImage(gameOverImg);
     }
 
     private Text textifyIntValue(int intValue) {

@@ -22,7 +22,7 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int count = pet.getHunger();
+        int count = pet.getActualHunger();
         assertEquals(expectedHunger, count);
     }
 
@@ -46,8 +46,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHunger = pet.getHunger();
-        int countHappiness = pet.getHappiness();
+        int countHunger = pet.getActualHunger();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHunger, countHunger);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -72,8 +72,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHunger = pet.getHunger();
-        int countHappiness = pet.getHappiness();
+        int countHunger = pet.getActualHunger();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHunger, countHunger);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -98,8 +98,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHunger = pet.getHunger();
-        int countHappiness = pet.getHappiness();
+        int countHunger = pet.getActualHunger();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHunger, countHunger);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -124,8 +124,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHealth = pet.getHealth();
-        int countHappiness = pet.getHappiness();
+        int countHealth = pet.getActualHealth();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHealth, countHealth);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -150,8 +150,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHealth = pet.getHealth();
-        int countHappiness = pet.getHappiness();
+        int countHealth = pet.getActualHealth();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHealth, countHealth);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -173,7 +173,7 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int count = pet.getHunger();
+        int count = pet.getActualHunger();
         assertEquals(expectedHunger, count);
     }
 
@@ -197,8 +197,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHunger = pet.getHunger();
-        int countHappiness = pet.getHappiness();
+        int countHunger = pet.getActualHunger();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHunger, countHunger);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -223,8 +223,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHunger = pet.getHunger();
-        int countHappiness = pet.getHappiness();
+        int countHunger = pet.getActualHunger();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHunger, countHunger);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -249,8 +249,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHunger = pet.getHunger();
-        int countHappiness = pet.getHappiness();
+        int countHunger = pet.getActualHunger();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHunger, countHunger);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -275,8 +275,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHealth = pet.getHealth();
-        int countHappiness = pet.getHappiness();
+        int countHealth = pet.getActualHealth();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHealth, countHealth);
         assertEquals(expectedHappiness, countHappiness);
     }
@@ -301,8 +301,8 @@ class Tests {
 
         //then
         pet.calculateStats(activity);
-        int countHealth = pet.getHealth();
-        int countHappiness = pet.getHappiness();
+        int countHealth = pet.getActualHealth();
+        int countHappiness = pet.getActualHappiness();
         assertEquals(expectedHealth, countHealth);
         assertEquals(expectedHappiness, countHappiness);
     }

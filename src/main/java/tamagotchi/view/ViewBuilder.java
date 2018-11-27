@@ -1,5 +1,6 @@
 package tamagotchi.view;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -28,9 +29,9 @@ public class ViewBuilder {
     public ViewBuilder(Pane root, Pet pet) {
         this.root = root;
         this.pet = pet;
-        actualHealth = textifyIntValue(pet.getHealth());
-        actualHappiness = textifyIntValue(pet.getHappiness());
-        actualHunger = textifyIntValue(pet.getHunger());
+        actualHealth = textifyIntValue(pet.getActualHealth());
+        actualHappiness = textifyIntValue(pet.getActualHappiness());
+        actualHunger = textifyIntValue(pet.getActualHunger());
         actualStats = new Text[]{actualHunger, actualHappiness, actualHealth};
 
         createView();
@@ -174,12 +175,8 @@ public class ViewBuilder {
         return new Activity(activity, pet);
     }
 
-    private void addToPane(ImageView imageview) {
-        root.getChildren().add(imageview);
-    }
-
-    private void addToPane(Text text) {
-        root.getChildren().add(text);
+    private <T extends Node> void addToPane(T node) {
+        root.getChildren().add(node);
     }
 
     private void setActualHunger() {

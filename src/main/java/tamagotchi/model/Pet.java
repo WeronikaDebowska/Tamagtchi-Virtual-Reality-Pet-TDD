@@ -5,6 +5,7 @@ import tamagotchi.view.PetView;
 import tamagotchi.view.ViewBuilder;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -73,18 +74,51 @@ public class Pet {
         if (getPetState() != PetState.UNHAPPY) {
             showAccurateDialoque(getPetState());
         } else {
-            int lowestStat = calculateLowestStat();
-            if (lowestStat == actualStats.get(Stats.HUNGER)) {
+            int lowestStat = findLowestStat();
+            if (lowestStat == getActualHunger()) {
                 showAccurateDialoque(PetState.HUNGRY);
-            } else if (lowestStat == actualStats.get(Stats.HAPPINESS)) {
+            } else if (lowestStat == getActualHappiness()) {
                 showAccurateDialoque(PetState.BORED);
-            } else if (lowestStat == actualStats.get(Stats.HEALTH)) {
+            } else if (lowestStat == getActualHealth()) {
                 showAccurateDialoque(PetState.SICK);
             }
         }
     }
 
     private boolean isPetDead() {
+        return isAnyStatEqualZero();
+    }
+
+    private boolean isPetInAgony() {                                                //checking if any stat is under critical value
+        return isAnyStatUnderCriticalLevel();
+    }
+
+    private boolean isPetDelighted(int averageState) {
+        return averageState >= 90;
+    }
+
+    private boolean isPetUnhappy() {                                                //checking if any stat is under low value
+        return isAnyStatUnderLowLevel();
+    }
+
+    public boolean isPetAlive() {
+        return petState != PetState.DEAD;
+    }
+
+    private boolean isAnyStatUnderLowLevel() {
+        for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
+            if (isSingleStatUnderLowLevel(singleStat)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSingleStatUnderLowLevel(Map.Entry<Stats, Integer> singleStat) {
+        return singleStat.getValue() < singleStat.getKey().getLOW();
+    }
+
+    private boolean isAnyStatEqualZero() {
         for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
             if (singleStat.getValue() == 0) {
                 return true;
@@ -93,17 +127,17 @@ public class Pet {
         return false;
     }
 
-    private boolean isPetInAgony() {                                                //checking if any stat is under critical value
+    private boolean isAnyStatUnderCriticalLevel() {
         for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
-            if (singleStat.getValue() < singleStat.getKey().getCRITICAL_VALUES()) {
+            if (isSingleStatUnderCriticalLevel(singleStat)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isPetDelighted(int averageState) {
-        return averageState >= 90;
+    private boolean isSingleStatUnderCriticalLevel(Map.Entry<Stats, Integer> singleStat) {
+        return singleStat.getValue() < singleStat.getKey().getCRITICAL_VALUES();
     }
 
     private void showAccurateDialoque(PetState petState) {
@@ -117,15 +151,19 @@ public class Pet {
     }
 
     private void updateStat(Stats stat, Integer points) {
-        if (actualStats.get(stat) >= 0 && actualStats.get(stat) <= 100) {
+        if (isStatInRange(stat)) {
             actualStats.put(stat, updateValue(stat, points));
         }
     }
 
     public void updateStat(Stats stat) {
-        if (actualStats.get(stat) >= 0 && actualStats.get(stat) <= 100) {
+        if (isStatInRange(stat)) {
             actualStats.put(stat, updateValue(stat));
         }
+    }
+
+    private boolean isStatInRange(Stats stat) {
+        return actualStats.get(stat) >= 0 && actualStats.get(stat) <= 100;
     }
 
     private Integer updateValue(Stats stat) {
@@ -136,23 +174,14 @@ public class Pet {
         return max(min(actualStats.get(stat) + points, stat.getINITIAL_VALUES()), 0);
     }
 
-    public boolean isPetAlive() {
-        return petState != PetState.DEAD;
-    }
 
-
-    private boolean isPetUnhappy() {                                                //checking if any stat is under low value
+    private int findLowestStat() {
+        int lowestStat = 100;       //initial and maximum of each stat
         for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
-            if (singleStat.getValue() < singleStat.getKey().getLOW()) {
-                return true;
+            if (singleStat.getValue() < lowestStat) {
+                lowestStat = singleStat.getValue();
             }
         }
-        return false;
-    }
-
-    private int calculateLowestStat() {
-        int temp = min(actualStats.get(Stats.HAPPINESS), actualStats.get(Stats.HUNGER));
-        int lowestStat = min(temp, actualStats.get(Stats.HEALTH));
         return lowestStat;
     }
 
@@ -186,24 +215,24 @@ public class Pet {
         this.petView = petView;
     }
 
-    public int getHunger() {
+    public int getActualHunger() {
         return actualStats.get(Stats.HUNGER);
+    }
+
+    public int getActualHappiness() {
+        return actualStats.get(Stats.HAPPINESS);
+    }
+
+    public int getActualHealth() {
+        return actualStats.get(Stats.HEALTH);
     }
 
     void setHunger(int hunger) {
         actualStats.put(Stats.HUNGER, hunger);
     }
 
-    public int getHappiness() {
-        return actualStats.get(Stats.HAPPINESS);
-    }
-
     void setHappiness(int happiness) {
         actualStats.put(Stats.HAPPINESS, happiness);
-    }
-
-    public int getHealth() {
-        return actualStats.get(Stats.HEALTH);
     }
 
     void setHealth(int health) {

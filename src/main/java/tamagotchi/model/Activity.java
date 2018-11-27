@@ -24,8 +24,7 @@ public class Activity extends ImageView implements Executive {
         if (PET.getPetState() != PetState.DEAD) {
             PET.calculateStats(ACTIVITY);
             PET.updatePet();
-//            viewBuilder.updateStatsInNumbers();
-//            viewBuilder.updatePetView();
+
         }
     }
 

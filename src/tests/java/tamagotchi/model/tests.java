@@ -6,13 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Tests {
 
-//    @BeforeEach
-//    // creating a pet
-//    Pet createTestingPet(){
-//        return new Pet();
-//    }
-
-
     @Test
     // checking FEED_WITH_MEAT execution
     void IsFeedingWithMeatWorking(){
@@ -21,7 +14,7 @@ class Tests {
 
         //GIVEN
         int initialHunger = 50;
-        int expectedHunger = initialHunger-20;
+        int expectedHunger = initialHunger + 20;
         pet.setHunger(initialHunger);
 
         //when
@@ -41,7 +34,7 @@ class Tests {
 
         //GIVEN
         int initialHunger = 50;
-        int expectedHunger = initialHunger - 10;
+        int expectedHunger = initialHunger + 10;
         int initialHappines = 50;
         int expectedHappiness = initialHappines + 10;
 
@@ -67,9 +60,9 @@ class Tests {
 
         //GIVEN
         int initialHunger = 50;
-        int expectedHunger = initialHunger + 20;
+        int expectedHunger = initialHunger - 15;
         int initialHappiness = 50;
-        int expectedHappiness = initialHappiness + 30;
+        int expectedHappiness = initialHappiness + 20;
 
         pet.setHunger(initialHunger);
         pet.setHappiness(initialHappiness);
@@ -93,7 +86,7 @@ class Tests {
 
         //GIVEN
         int initialHunger = 50;
-        int expectedHunger = initialHunger + 10;
+        int expectedHunger = initialHunger - 10;
         int initialHappiness = 50;
         int expectedHappiness = initialHappiness + 20;
 
@@ -121,7 +114,7 @@ class Tests {
         int initialHealth = 50;
         int expectedHealth = initialHealth + 30;
         int initialHappiness = 50;
-        int expectedHappiness = initialHappiness - 20;
+        int expectedHappiness = initialHappiness - 10;
 
         pet.setHealth(initialHealth);
         pet.setHappiness(initialHappiness);
@@ -147,7 +140,7 @@ class Tests {
         int initialHealth = 50;
         int expectedHealth = initialHealth + 10;
         int initialHappiness = 50;
-        int expectedHappiness = initialHappiness - 5;
+        int expectedHappiness = initialHappiness - 25;
 
         pet.setHealth(initialHealth);
         pet.setHappiness(initialHappiness);
@@ -171,8 +164,8 @@ class Tests {
         Pet pet = new Pet();
 
         //GIVEN
-        int initialHunger = 10;
-        int expectedHunger = 0;     //hunger not lower than 0
+        int initialHunger = 90;
+        int expectedHunger = 100;     //hunger not lower than 0
         pet.setHunger(initialHunger);
 
         //when
@@ -191,8 +184,8 @@ class Tests {
         Pet pet = new Pet();
 
         //GIVEN
-        int initialHunger = 5;
-        int expectedHunger = 0;
+        int initialHunger = 95;
+        int expectedHunger = 100;
         int initialHappiness = 95;
         int expectedHappiness = 100;
 
@@ -217,9 +210,9 @@ class Tests {
         Pet pet = new Pet();
 
         //GIVEN
-        int initialHunger = 100;
-        int expectedHunger = 100;
-        int initialHappiness = 100;
+        int initialHunger = 10;
+        int expectedHunger = 0;
+        int initialHappiness = 90;
         int expectedHappiness = 100;
 
         pet.setHunger(initialHunger);
@@ -243,8 +236,8 @@ class Tests {
         Pet pet = new Pet();
 
         //GIVEN
-        int initialHunger = 95;
-        int expectedHunger = 100;
+        int initialHunger = 5;
+        int expectedHunger = 0;
         int initialHappiness = 85;
         int expectedHappiness = 100;
 
@@ -271,7 +264,7 @@ class Tests {
         //GIVEN
         int initialHealth = 90;
         int expectedHealth = 100;
-        int initialHappiness = 15;
+        int initialHappiness = 5;
         int expectedHappiness = 0;
 
         pet.setHealth(initialHealth);
@@ -316,12 +309,12 @@ class Tests {
 
     @Test
         // checking initial PetStates
-    void IsNormalStateInitially(){
+    void IsDelightedStateInitially() {
 
         Pet pet = new Pet();
 
         //given
-        PetState expectedPetState = PetState.NORMAL;
+        PetState expectedPetState = PetState.DELIGHTED;
 
         //then
         PetState actualState = pet.getPetState();
@@ -354,7 +347,7 @@ class Tests {
         Pet pet = new Pet();
 
         //given
-        int happinessCausingUnhappyState = 69;
+        int happinessCausingUnhappyState = 39;
         PetState expectedPetState = PetState.UNHAPPY;
 
         //when
@@ -415,7 +408,7 @@ class Tests {
         Pet pet = new Pet();
 
         //given
-        int hunger = 81;
+        int hunger = 11;
         int happiness = 19;
         int health = 19;
         PetState expectedPetState = PetState.DYING;
@@ -438,7 +431,7 @@ class Tests {
         Pet pet = new Pet();
 
         //given
-        int hunger = 10;
+        int hunger = 98;
         int happiness = 95;
         int health = 91;
         PetState expectedPetState = PetState.DELIGHTED;

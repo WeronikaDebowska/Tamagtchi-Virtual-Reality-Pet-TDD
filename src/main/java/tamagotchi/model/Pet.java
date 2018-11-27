@@ -1,5 +1,6 @@
 package tamagotchi.model;
 
+
 import tamagotchi.view.PetView;
 import tamagotchi.view.ViewBuilder;
 
@@ -18,108 +19,155 @@ public class Pet {
     private PetState petState;
     private PetView petView;
 
-    private HashMap<Stats, Integer> actualStats = new HashMap<Stats, Integer>() {{
-        put(Stats.HAPPINESS, happiness);
-        put(Stats.HEALTH, health);
-        put(Stats.HUNGER, hunger);
-
-    }};
+    private HashMap<Stats, Integer> actualStats;
 
     private ViewBuilder viewBuilder;
+
     public Pet() {
-        this.hunger = Stats.HUNGER.getINITIAL_VALUES();
-        this.happiness = Stats.HAPPINESS.getINITIAL_VALUES();
-        this.health = Stats.HEALTH.getINITIAL_VALUES();
-        this.petState = updatePetState();
+        hunger = Stats.HUNGER.getINITIAL_VALUES();
+        happiness = Stats.HAPPINESS.getINITIAL_VALUES();
+        health = Stats.HEALTH.getINITIAL_VALUES();
+
+        actualStats = new HashMap<Stats, Integer>() {{
+            put(Stats.HAPPINESS, happiness);
+            put(Stats.HEALTH, health);
+            put(Stats.HUNGER, hunger);
+        }};
+        petState = updatePetState();
     }
 
     public void updatePet() {
         updatePetState();
+        updatePetView();
+        updateDialogue();
+    }
+
+    public PetState updatePetState() {
+
+        int averageState = calculateAverageState();
+
+        if (isPetDead()) {
+            petState = PetState.DEAD;
+        } else if (isPetInAgony()) {
+            petState = PetState.DYING;
+        } else if (isPetDelighted(averageState)) {
+            petState = PetState.DELIGHTED;
+        } else if (isPetUnhappy()) {
+            petState = PetState.UNHAPPY;
+        } else {
+            petState = PetState.NORMAL;
+        }
+        return petState;
+    }
+
+    private void updatePetView() {
         if (petState != PetState.DEAD) {
             viewBuilder.updateStatsInNumbers();
             viewBuilder.updatePetView();
         } else {
-            System.out.println("KONEC");
             viewBuilder.showGameOver();
         }
     }
 
+    public void updateDialogue() {
+        if (getPetState() != PetState.UNHAPPY) {
+            showAccurateDialoque(getPetState());
+        } else {
+            int lowestStat = calculateLowestStat();
+            if (lowestStat == actualStats.get(Stats.HUNGER)) {
+                showAccurateDialoque(PetState.HUNGRY);
+            } else if (lowestStat == actualStats.get(Stats.HAPPINESS)) {
+                showAccurateDialoque(PetState.BORED);
+            } else if (lowestStat == actualStats.get(Stats.HEALTH)) {
+                showAccurateDialoque(PetState.SICK);
+            }
+        }
+    }
+
+    private boolean isPetDead() {
+        for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
+            if (singleStat.getValue() == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isPetInAgony() {                                                //checking if any stat is under critical value
+        for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
+            if (singleStat.getValue() < singleStat.getKey().getCRITICAL_VALUES()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isPetDelighted(int averageState) {
+        return averageState >= 90;
+    }
+
+    private void showAccurateDialoque(PetState petState) {
+        viewBuilder.updateDialogue(petView.getPetDialogues().get(petState));
+    }
+
     void calculateStats(ActivityEnum activity) {
         for (HashMap.Entry<Stats,Integer> singleResult : activity.getResults().entrySet()){
-            calculateSinglePetStat(singleResult.getKey(), singleResult.getValue());
+            updateStat(singleResult.getKey(), singleResult.getValue());
         }
     }
 
-    public void calculateSinglePetStat(Stats stats, Integer points) {
-        switch (stats){
-            case HAPPINESS:
-                updateHappiness(points);
-                break;
-            case HEALTH:
-                updateHealth(points);
-                break;
-            case HUNGER:
-                updateHunger(points);
-                break;
+    private void updateStat(Stats stat, Integer points) {
+        if (actualStats.get(stat) >= 0 && actualStats.get(stat) <= 100) {
+            actualStats.put(stat, updateValue(stat, points));
         }
     }
 
-    private void updateHunger(Integer points) {
-        if (hunger >= 0 && hunger <= 100) {
-            hunger = (min(max(getHunger() + points, Stats.HUNGER.getINITIAL_VALUES()), 100));
+    public void updateStat(Stats stat) {
+        if (actualStats.get(stat) >= 0 && actualStats.get(stat) <= 100) {
+            actualStats.put(stat, updateValue(stat));
         }
     }
 
-    private void updateHealth(Integer points) {
-        if (health >= 0 && health <= 100) {
-            health = (min(getHealth() + points, Stats.HEALTH.getINITIAL_VALUES()));
-        }
+    private Integer updateValue(Stats stat) {
+        return max(min(actualStats.get(stat) + stat.getPOINTS_INCREASEMENT(), stat.getINITIAL_VALUES()), 0);
     }
 
-    private void updateHappiness(Integer points) {
-        if (happiness >= 0 && happiness <= 100) {       //points in percents
-            happiness = (max(min(getHappiness() + points, Stats.HAPPINESS.getINITIAL_VALUES()), 0));
-        }
+    private Integer updateValue(Stats stat, Integer points) {
+        return max(min(actualStats.get(stat) + points, stat.getINITIAL_VALUES()), 0);
     }
 
     public boolean isPetAlive() {
         return petState != PetState.DEAD;
     }
 
-    public PetState updatePetState() {
 
-        int averageState = calculateAverageState();
-        System.out.println(averageState);
-
-        boolean isPetDead = happiness == 0 || health == 0 || hunger == 100;
-
-        boolean isPetHungry = getHunger() > Stats.HUNGER.getCRITICAL_VALUES();
-        boolean isPetSad = getHappiness() < Stats.HAPPINESS.getCRITICAL_VALUES();
-        boolean isPetSick = getHealth() < Stats.HEALTH.getCRITICAL_VALUES();
-
-        boolean isPetInAgony = happiness <= 10 || health <= 10 || hunger >= 90;
-        boolean isPetUnhappy = averageState >= 20 && averageState < 70;
-        boolean isPetNormal = averageState >= 70 && averageState < 95;
-        boolean isPetDelighted = averageState >= 95;
-
-        if (isPetDead) {
-            petState = PetState.DEAD;
-        } else if (isPetInAgony) {
-            petState = PetState.DYING;
-        } else if(isPetDelighted) {
-            petState = PetState.DELIGHTED;
-        } else if (isPetNormal) {
-            petState = PetState.NORMAL;
-        } else if ((isPetHungry || isPetSick || isPetSad || isPetUnhappy) ){
-            petState = PetState.UNHAPPY;
+    private boolean isPetUnhappy() {                                                //checking if any stat is under low value
+        for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
+            if (singleStat.getValue() < singleStat.getKey().getLOW()) {
+                return true;
+            }
         }
-        System.out.println(petState);
+        return false;
+    }
 
-        return petState;
+    private int calculateLowestStat() {
+        int temp = min(actualStats.get(Stats.HAPPINESS), actualStats.get(Stats.HUNGER));
+        int lowestStat = min(temp, actualStats.get(Stats.HEALTH));
+        return lowestStat;
     }
 
     private int calculateAverageState() {
-        return (getHappiness() + (100 - getHunger()) + getHealth()) / (Stats.values().length);
+        int total = countSumOfStats();
+        int numberOfStats = (Stats.values().length);
+        return total / numberOfStats;
+    }
+
+    private int countSumOfStats() {
+        int total = 0;
+        for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
+            total += singleStat.getValue();
+        }
+        return total;
     }
 
     public void setViewBuilder(ViewBuilder viewBuilder) {
@@ -130,31 +178,35 @@ public class Pet {
         return petState;
     }
 
-    public int getHunger() {
-        return hunger;
-    }
-
-    void setHunger(int hunger) {
-        this.hunger = hunger;
-    }
-
-    public int getHappiness() {
-        return happiness;
-    }
-
-    void setHappiness(int happiness) {
-        this.happiness = happiness;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    void setHealth(int health) {
-        this.health = health;
+    public HashMap<Stats, Integer> getActualStats() {
+        return actualStats;
     }
 
     public void setPetView(PetView petView) {
         this.petView = petView;
+    }
+
+    public int getHunger() {
+        return actualStats.get(Stats.HUNGER);
+    }
+
+    void setHunger(int hunger) {
+        actualStats.put(Stats.HUNGER, hunger);
+    }
+
+    public int getHappiness() {
+        return actualStats.get(Stats.HAPPINESS);
+    }
+
+    void setHappiness(int happiness) {
+        actualStats.put(Stats.HAPPINESS, happiness);
+    }
+
+    public int getHealth() {
+        return actualStats.get(Stats.HEALTH);
+    }
+
+    void setHealth(int health) {
+        actualStats.put(Stats.HEALTH, health);
     }
 }

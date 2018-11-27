@@ -11,7 +11,6 @@ import java.util.Random;
 
 public class PetView extends ImageView {
 
-
     private ImageView petImageView;
     private Image petImage;
     private Pet pet;
@@ -20,8 +19,16 @@ public class PetView extends ImageView {
         put(PetState.DELIGHTED, PetStatesView.DELIGHTED_VIEW);
         put(PetState.NORMAL, PetStatesView.NORMAL_VIEW);
         put(PetState.UNHAPPY, PetStatesView.UNHAPPY_VIEW);
-        put(PetState.SLEEPING, PetStatesView.SLEEPING_VIEW);
         put(PetState.DYING, PetStatesView.DYING_VIEW);
+    }};
+
+    private HashMap<PetState, Dialogues> petDialogues = new HashMap<PetState, Dialogues>() {{
+        put(PetState.DELIGHTED, Dialogues.DELIGHTED_DIALOGUE);
+        put(PetState.NORMAL, Dialogues.NORMAL_DIALOGUE);
+        put(PetState.DYING, Dialogues.DYING_DIALOGUE);
+        put(PetState.BORED, Dialogues.BORED_DIALOGUE);
+        put(PetState.SICK, Dialogues.SICK_DIALOGUE);
+        put(PetState.HUNGRY, Dialogues.HUNGRY_DIALOGUE);
     }};
 
     PetView(Pet pet) {
@@ -39,7 +46,7 @@ public class PetView extends ImageView {
         if (!isPetImageView()) {
             createPetImageView();
         } else {
-            actualizePetImageView();
+            actualizeImageView(petImageView, petImage);
         }
     }
 
@@ -47,8 +54,8 @@ public class PetView extends ImageView {
         petImage = getRandomPetStateImg();
     }
 
-    private void actualizePetImageView() {
-        petImageView.setImage(petImage);
+    private void actualizeImageView(ImageView imageView, Image image) {
+        imageView.setImage(image);
     }
 
     private boolean isPetImageView() {
@@ -73,5 +80,9 @@ public class PetView extends ImageView {
         return petImageView;
     }
 
+
+    public HashMap<PetState, Dialogues> getPetDialogues() {
+        return petDialogues;
+    }
 
 }

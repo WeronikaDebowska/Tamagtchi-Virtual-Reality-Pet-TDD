@@ -3,7 +3,6 @@ package tamagotchi.view;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import tamagotchi.model.*;
 
@@ -14,13 +13,16 @@ public class ViewBuilder {
     private Pet pet;
     private PetView petView;
 
+    private ImageView sceneBackground;
+
     private Text actualHunger;
     private Text actualHappiness;
     private Text actualHealth;
 
-    private ImageView sceneBackground;
+    private Text[] actualStats;
 
-    private Text[] actualStats = new Text[]{actualHappiness, actualHealth, actualHunger};
+    private ImageView dialogueView;
+    private Image dialogue;
 
 
     public ViewBuilder(Pane root, Pet pet) {
@@ -29,6 +31,8 @@ public class ViewBuilder {
         actualHealth = textifyIntValue(pet.getHealth());
         actualHappiness = textifyIntValue(pet.getHappiness());
         actualHunger = textifyIntValue(pet.getHunger());
+        actualStats = new Text[]{actualHunger, actualHappiness, actualHealth};
+
         createView();
     }
 
@@ -38,46 +42,33 @@ public class ViewBuilder {
         showStatsViews();
         showStatsInNumbers();
         this.petView = showPet();
-        pet.setPetView(petView);
+        attachPetViewToPet();
+        showDialogue();
     }
-
 
     private void showBackground() {
 
         Image background = new Image("background.png");
         sceneBackground = new ImageView(background);
-        root.getChildren().add(sceneBackground);
+        addToPane(sceneBackground);
     }
 
     private void showButtons(){
 
         final double HORIZONTAL_POSITION = 200;
         final double VERTICAL_POSITION = 465;
-
         final double DISTANCE_BETWEEN_BUTTONS = 100;
 
         int count = 0;
 
         for (ActivityEnum activity : ActivityEnum.values()) {
+
             Activity activityButton = createActivityButton(activity, pet);
             ActivityButtonView activityButtonView = new ActivityButtonView(activityButton);
             addToPane(activityButtonView);
             setButtonPosition(HORIZONTAL_POSITION, VERTICAL_POSITION, DISTANCE_BETWEEN_BUTTONS, count, activityButtonView);
             count++;
         }
-    }
-
-    private Activity createActivityButton(ActivityEnum activity, Pet pet) {
-        return new Activity(activity, pet);
-    }
-
-    private void addToPane(ActivityButtonView activityButtonViews) {
-        root.getChildren().add(activityButtonViews);
-    }
-
-    private void setButtonPosition(double horizontalPos, double verticalPos, double distBetween, int count, ActivityButtonView activityButtonView) {
-        activityButtonView.setX(horizontalPos + count * distBetween);
-        activityButtonView.setY(verticalPos);
     }
 
     private void showStatsViews(){
@@ -91,34 +82,32 @@ public class ViewBuilder {
 
         for (Stats stat : Stats.values()){
             ImageView statImage = createStatImageView(stat.getSTAT_VIEW());
-            root.getChildren().add(statImage);          // TODO refactor to generic method addToPane(imageView);
-
-            statImage.setX(HORIZONTAL_POSITION + count * DISTANCE_BETWEEN_BUTTONS); // TODO refactor to generic method setPositionOnPane(imageView);
+            addToPane(statImage);
+            statImage.setX(HORIZONTAL_POSITION + count * DISTANCE_BETWEEN_BUTTONS);
             statImage.setY(VERTICAL_POSITION);
-
             count++;
         }
     }
 
-    public void showStatsInNumbers() {
+    private void setButtonPosition(double horizontalPos, double verticalPos, double distBetween, int count, ActivityButtonView activityButtonView) {
+        activityButtonView.setX(horizontalPos + count * distBetween);
+        activityButtonView.setY(verticalPos);
+    }
 
-        root.getChildren().add(actualHunger);
-        root.getChildren().add(actualHappiness);
-        root.getChildren().add(actualHealth);
+    private void showStatsInNumbers() {
 
         final double TEXT_VERTICAL_POSITION = 90;
         final double TEXT_HORIZONTAL_POSITION = 537;
         final double DISTANCE_BETWEEN_BUTTONS = 100;
 
-        actualHunger.setX(TEXT_HORIZONTAL_POSITION + 0 * DISTANCE_BETWEEN_BUTTONS);
-        actualHunger.setFill(Color.FORESTGREEN);
-        actualHunger.setY(TEXT_VERTICAL_POSITION);
-        actualHappiness.setX(TEXT_HORIZONTAL_POSITION + 1 * DISTANCE_BETWEEN_BUTTONS);
-        actualHappiness.setFill(Color.FORESTGREEN);
-        actualHappiness.setY(TEXT_VERTICAL_POSITION);
-        actualHealth.setX(TEXT_HORIZONTAL_POSITION + 2 * DISTANCE_BETWEEN_BUTTONS);
-        actualHealth.setFill(Color.FORESTGREEN);
-        actualHealth.setY(TEXT_VERTICAL_POSITION);
+        int count = 0;
+
+        for (Text stat : actualStats) {
+            addToPane(stat);
+            stat.setY(TEXT_VERTICAL_POSITION);
+            stat.setX(TEXT_HORIZONTAL_POSITION + count * DISTANCE_BETWEEN_BUTTONS);
+            count++;
+        }
     }
 
 
@@ -126,15 +115,31 @@ public class ViewBuilder {
         return new ImageView(new Image(stat.getImageUrl()));
     }
 
-    public PetView showPet() {
+    private PetView showPet() {
 
         PetView petView = new PetView(pet);
         ImageView petImageView = petView.getPetImageView();
-        root.getChildren().add(petImageView);
-        petImageView.setX(190);
-        petImageView.setY(270);
+        addToPane(petImageView);
+
+        final int PET_X_CO = 190;
+        final int PET_Y_CO = 270;
+        petImageView.setX(PET_X_CO);
+        petImageView.setY(PET_Y_CO);
 
         return petView;
+    }
+
+    private void showDialogue() {
+        dialogue = new Image(Dialogues.TRANSPARENT_DIALOGUE.getDIALOGUE_URL());
+        dialogueView = new ImageView(dialogue);
+        addToPane(dialogueView);
+        dialogueView.setX(370);         //immutable x position of dialog in the window
+        dialogueView.setY(250);         //immutable y position of dialog in the window
+    }
+
+
+    private Text textifyIntValue(int intValue) {
+        return new Text(((Integer) intValue).toString());
     }
 
     public void updatePetView() {
@@ -142,30 +147,50 @@ public class ViewBuilder {
     }
 
     public void showGameOver() {
-        System.out.println("GAME OVER");
+        dialogue = new Image(Dialogues.TRANSPARENT_DIALOGUE.getDIALOGUE_URL());
+        dialogueView.setImage(dialogue);
+
         Image gameOverImg = new Image("game-over.png");
         sceneBackground.setImage(gameOverImg);
-    }
-
-    private Text textifyIntValue(int intValue) {
-        return new Text(((Integer) intValue).toString());
-    }
-
-    public void setActualHunger() {
-        this.actualHunger.setText(((Integer) pet.getHunger()).toString());
-    }
-
-    public void setActualHappiness() {
-        this.actualHappiness.setText(((Integer) pet.getHappiness()).toString());
-    }
-
-    public void setActualHealth() {
-        this.actualHealth.setText(((Integer) pet.getHealth()).toString());
     }
 
     public void updateStatsInNumbers() {
         setActualHappiness();
         setActualHealth();
         setActualHunger();
+    }
+
+
+    public void updateDialogue(Dialogues dialogueToDisplay) {
+        dialogue = new Image(dialogueToDisplay.getDIALOGUE_URL());
+        dialogueView.setImage(dialogue);
+    }
+
+    private void attachPetViewToPet() {
+        pet.setPetView(petView);
+    }
+
+    private Activity createActivityButton(ActivityEnum activity, Pet pet) {
+        return new Activity(activity, pet);
+    }
+
+    private void addToPane(ImageView imageview) {
+        root.getChildren().add(imageview);
+    }
+
+    private void addToPane(Text text) {
+        root.getChildren().add(text);
+    }
+
+    private void setActualHunger() {
+        this.actualHunger.setText((pet.getActualStats().get(Stats.HUNGER)).toString());
+    }
+
+    private void setActualHappiness() {
+        this.actualHappiness.setText((pet.getActualStats().get(Stats.HAPPINESS)).toString());
+    }
+
+    private void setActualHealth() {
+        this.actualHealth.setText((pet.getActualStats().get(Stats.HEALTH)).toString());
     }
 }

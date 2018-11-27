@@ -4,9 +4,12 @@ public enum PetState {
     DELIGHTED,
     NORMAL,
     UNHAPPY,
-    SLEEPING,
     DYING,
     DEAD,
+
+    BORED,
+    HUNGRY,
+    SICK,
 
 }
 

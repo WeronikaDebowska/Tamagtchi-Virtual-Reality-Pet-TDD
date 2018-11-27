@@ -14,7 +14,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class StatsChangesController {
 
     private final ScheduledExecutorService scheduler =
-            Executors.newScheduledThreadPool(5);
+            Executors.newScheduledThreadPool(10);
     private Stats stat;
     private Pet pet;
     private ViewBuilder viewBuilder;
@@ -26,34 +26,24 @@ public class StatsChangesController {
     }
 
 
-    public void updateStats() {
+    public void changeStatsInTime() {
 
         if (pet.isPetAlive()) {
 
-            final Runnable gameUpdate = new Runnable() {
+            final Runnable changeStats = new Runnable() {
                 public void run() {
 
                     if (pet.isPetAlive()) {
-                        pet.calculateSinglePetStat(stat, stat.getPOINTS_INCREASEMENT());
-                        switch (stat) {
-                            case HAPPINESS:
-                                viewBuilder.setActualHappiness();
-                                break;
-                            case HUNGER:
-                                viewBuilder.setActualHunger();
-                                break;
-                            case HEALTH:
-                                viewBuilder.setActualHealth();
-                                break;
-                        }
-
+                        pet.updateStat(stat);
+                        viewBuilder.updateStatsInNumbers();
                         pet.updatePet();
+                        pet.updateDialogue();
                     }
                 }
             };
 
             long initialDelay = 5000;
-            gameUpdating = scheduler.scheduleAtFixedRate(gameUpdate, initialDelay, stat.getTIME_INTERVAL_MILISEC(), MILLISECONDS);
+            gameUpdating = scheduler.scheduleAtFixedRate(changeStats, initialDelay, stat.getTIME_INTERVAL_MILISEC(), MILLISECONDS);
         }
     }
 

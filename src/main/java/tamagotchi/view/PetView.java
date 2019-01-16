@@ -3,10 +3,6 @@ package tamagotchi.view;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import tamagotchi.model.Pet;
-import tamagotchi.model.PetState;
-
-
-import java.util.HashMap;
 import java.util.Random;
 
 public class PetView extends ImageView {
@@ -14,75 +10,58 @@ public class PetView extends ImageView {
     private ImageView petImageView;
     private Image petImage;
     private Pet pet;
+    final private int WINDOW_WIDTH;
+    final private int WINDOW_HEIGHT;
 
-    private HashMap<PetState, PetStatesView> petStatesImages = new HashMap<PetState, PetStatesView>() {{
-        put(PetState.DELIGHTED, PetStatesView.DELIGHTED_VIEW);
-        put(PetState.NORMAL, PetStatesView.NORMAL_VIEW);
-        put(PetState.UNHAPPY, PetStatesView.UNHAPPY_VIEW);
-        put(PetState.DYING, PetStatesView.DYING_VIEW);
-    }};
 
-    private HashMap<PetState, Dialogues> petDialogues = new HashMap<PetState, Dialogues>() {{
-        put(PetState.DELIGHTED, Dialogues.DELIGHTED_DIALOGUE);
-        put(PetState.NORMAL, Dialogues.NORMAL_DIALOGUE);
-        put(PetState.DYING, Dialogues.DYING_DIALOGUE);
-        put(PetState.BORED, Dialogues.BORED_DIALOGUE);
-        put(PetState.SICK, Dialogues.SICK_DIALOGUE);
-        put(PetState.HUNGRY, Dialogues.HUNGRY_DIALOGUE);
-    }};
-
-    PetView(Pet pet) {
+    public PetView(Pet pet, int windowWidth, int windowHeight) {
         super();
         this.pet = pet;
-        updatePetImageView();
+        this.WINDOW_WIDTH = windowWidth;
+        this.WINDOW_HEIGHT = windowHeight;
+        setInitialImage();
     }
 
     void createPetImageView() {
         petImageView = new ImageView(petImage);
+
+        final double PET_X_CO = 0.22 * WINDOW_WIDTH;
+        final double PET_Y_CO = 0.49 * WINDOW_HEIGHT;
+        petImageView.setX(PET_X_CO);
+        petImageView.setY(PET_Y_CO);
     }
 
-    void updatePetImageView() {
-        chooseImageAccordingToState();
+    void setInitialImage() {
         if (!isPetImageView()) {
             createPetImageView();
-        } else {
-            actualizeImageView(petImageView, petImage);
         }
+        actualizePetImageView(new Image("delighted.png"));
+    }
+
+    public void updatePetImageView() {
+        chooseImageAccordingToState();
+        petImageView.setImage(petImage);
     }
 
     private void chooseImageAccordingToState() {
-        petImage = getRandomPetStateImg();
+        int numberOfImagesOfState = pet.getPetState().getPetStateImgUrls().length;
+        int randomInt = new Random().nextInt(numberOfImagesOfState);
+        petImage = new Image(pet.getPetState().getPetStateImgUrls()[randomInt]);
     }
 
-    private void actualizeImageView(ImageView imageView, Image image) {
-        imageView.setImage(image);
+    private void actualizePetImageView(Image image) {
+        petImageView.setImage(image);
     }
 
     private boolean isPetImageView() {
         return petImageView != null;
     }
 
-    private Image getRandomPetStateImg() {
-        int randomInt = getRandomIntToChosePetImg();
-        return getImage(randomInt);
-    }
-
-    private Image getImage(int randomInt) {
-        return new Image(petStatesImages.get(pet.getPetState()).getImagesUrls()[randomInt]);
-    }
-
-    private int getRandomIntToChosePetImg() {
-        int numberOfImagesOfState = petStatesImages.get(pet.getPetState()).getImagesUrls().length;
-        return new Random().nextInt(numberOfImagesOfState);
-    }
-
     public ImageView getPetImageView() {
         return petImageView;
     }
 
-
-    public HashMap<PetState, Dialogues> getPetDialogues() {
-        return petDialogues;
+    public Image getPetImage() {
+        return petImage;
     }
-
 }

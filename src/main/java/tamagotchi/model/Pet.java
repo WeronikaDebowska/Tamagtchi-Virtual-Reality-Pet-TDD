@@ -1,11 +1,8 @@
 package tamagotchi.model;
 
-
-import tamagotchi.view.PetView;
 import tamagotchi.view.ViewBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -13,22 +10,16 @@ import static java.lang.Math.min;
 
 public class Pet {
 
-    private int hunger;
-    private int happiness;
-    private int health;
+    private int hunger = Stats.HUNGER.getInitialValues();
+    private int happiness = Stats.HAPPINESS.getInitialValues();
+    private int health = Stats.HEALTH.getInitialValues();
 
     private PetState petState;
-    private PetView petView;
-
     private HashMap<Stats, Integer> actualStats;
 
     private ViewBuilder viewBuilder;
 
     public Pet() {
-        hunger = Stats.HUNGER.getINITIAL_VALUES();
-        happiness = Stats.HAPPINESS.getINITIAL_VALUES();
-        health = Stats.HEALTH.getINITIAL_VALUES();
-
         actualStats = new HashMap<Stats, Integer>() {{
             put(Stats.HAPPINESS, happiness);
             put(Stats.HEALTH, health);
@@ -39,83 +30,57 @@ public class Pet {
 
     public void updatePet() {
         updatePetState();
-        updatePetView();
-        updateDialogue();
+        updateView();
     }
 
     public PetState updatePetState() {
 
         int averageState = calculateAverageState();
 
+        int NORMAL_LEVEL = 80;
+        int UNHAPPY_LEVEL = 50;
+        int DYING_LEVEL = 30;
+
         if (isPetDead()) {
             petState = PetState.DEAD;
-        } else if (isPetInAgony()) {
+        } else if (averageState <= DYING_LEVEL) {
             petState = PetState.DYING;
-        } else if (isPetDelighted(averageState)) {
-            petState = PetState.DELIGHTED;
-        } else if (isPetUnhappy()) {
+        } else if ((averageState <= UNHAPPY_LEVEL)) {
             petState = PetState.UNHAPPY;
-        } else {
+        } else if ((averageState <= NORMAL_LEVEL)) {
             petState = PetState.NORMAL;
+        } else {
+            petState = PetState.DELIGHTED;
         }
         return petState;
     }
 
-    private void updatePetView() {
-        if (petState != PetState.DEAD) {
-            viewBuilder.updateStatsInNumbers();
-            viewBuilder.updatePetView();
-        } else {
-            viewBuilder.showGameOver();
-        }
+    private void updateView() {
+        viewBuilder.updateView();
     }
 
-    public void updateDialogue() {
+    public String getAccurateDialogueUrl() {
+
+        String imgUrl = "";
+
         if (getPetState() != PetState.UNHAPPY) {
-            showAccurateDialoque(getPetState());
+            imgUrl = petState.getDialogueUrl();
         } else {
-            int lowestStat = findLowestStat();
-            if (lowestStat == getActualHunger()) {
-                showAccurateDialoque(PetState.HUNGRY);
-            } else if (lowestStat == getActualHappiness()) {
-                showAccurateDialoque(PetState.BORED);
-            } else if (lowestStat == getActualHealth()) {
-                showAccurateDialoque(PetState.SICK);
-            }
+            Stats lowestStat = findLowestStat();
+            imgUrl = lowestStat.getDialogueImgUrl();
+        }
+        return imgUrl;
+    }
+
+    public void interact(Activity activity) {
+        if (petState != PetState.DEAD) {
+            calculateStats(activity);
+            updateView();
         }
     }
 
-    private boolean isPetDead() {
+    public boolean isPetDead() {
         return isAnyStatEqualZero();
-    }
-
-    private boolean isPetInAgony() {                                                //checking if any stat is under critical value
-        return isAnyStatUnderCriticalLevel();
-    }
-
-    private boolean isPetDelighted(int averageState) {
-        return averageState >= 90;
-    }
-
-    private boolean isPetUnhappy() {                                                //checking if any stat is under low value
-        return isAnyStatUnderLowLevel();
-    }
-
-    public boolean isPetAlive() {
-        return petState != PetState.DEAD;
-    }
-
-    private boolean isAnyStatUnderLowLevel() {
-        for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
-            if (isSingleStatUnderLowLevel(singleStat)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isSingleStatUnderLowLevel(Map.Entry<Stats, Integer> singleStat) {
-        return singleStat.getValue() < singleStat.getKey().getLOW();
     }
 
     private boolean isAnyStatEqualZero() {
@@ -127,24 +92,7 @@ public class Pet {
         return false;
     }
 
-    private boolean isAnyStatUnderCriticalLevel() {
-        for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
-            if (isSingleStatUnderCriticalLevel(singleStat)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isSingleStatUnderCriticalLevel(Map.Entry<Stats, Integer> singleStat) {
-        return singleStat.getValue() < singleStat.getKey().getCRITICAL_VALUES();
-    }
-
-    private void showAccurateDialoque(PetState petState) {
-        viewBuilder.updateDialogue(petView.getPetDialogues().get(petState));
-    }
-
-    void calculateStats(ActivityEnum activity) {
+    private void calculateStats(Activity activity) {
         for (HashMap.Entry<Stats,Integer> singleResult : activity.getResults().entrySet()){
             updateStat(singleResult.getKey(), singleResult.getValue());
         }
@@ -159,6 +107,11 @@ public class Pet {
     public void updateStat(Stats stat) {
         if (isStatInRange(stat)) {
             actualStats.put(stat, updateValue(stat));
+            for (Map.Entry<Stats, Integer> entry : actualStats.entrySet()) {
+                System.out.println(entry.getKey());
+                System.out.println(entry.getValue());
+                System.out.println();
+            }
         }
     }
 
@@ -167,19 +120,21 @@ public class Pet {
     }
 
     private Integer updateValue(Stats stat) {
-        return max(min(actualStats.get(stat) + stat.getPOINTS_INCREASEMENT(), stat.getINITIAL_VALUES()), 0);
+        return max(min(actualStats.get(stat) + stat.getPointsIncreasement(), stat.getInitialValues()), 0);
     }
 
     private Integer updateValue(Stats stat, Integer points) {
-        return max(min(actualStats.get(stat) + points, stat.getINITIAL_VALUES()), 0);
+        return max(min(actualStats.get(stat) + points, stat.getInitialValues()), 0);
     }
 
 
-    private int findLowestStat() {
-        int lowestStat = 100;       //initial and maximum of each stat
+    private Stats findLowestStat() {
+        int lowestStatValue = 100;      //initial and maximum of each stat
+        Stats lowestStat = null;
         for (HashMap.Entry<Stats, Integer> singleStat : actualStats.entrySet()) {
-            if (singleStat.getValue() < lowestStat) {
-                lowestStat = singleStat.getValue();
+            if (singleStat.getValue() < lowestStatValue) {
+                lowestStatValue = singleStat.getValue();
+                lowestStat = singleStat.getKey();
             }
         }
         return lowestStat;
@@ -199,43 +154,15 @@ public class Pet {
         return total;
     }
 
-    public void setViewBuilder(ViewBuilder viewBuilder) {
-        this.viewBuilder = viewBuilder;
-    }
-
     public PetState getPetState() {
         return petState;
     }
 
-    public HashMap<Stats, Integer> getActualStats() {
-        return actualStats;
+    public int getActualStat(Stats stat) {
+        return actualStats.get(stat);
     }
 
-    public void setPetView(PetView petView) {
-        this.petView = petView;
-    }
-
-    public int getActualHunger() {
-        return actualStats.get(Stats.HUNGER);
-    }
-
-    public int getActualHappiness() {
-        return actualStats.get(Stats.HAPPINESS);
-    }
-
-    public int getActualHealth() {
-        return actualStats.get(Stats.HEALTH);
-    }
-
-    void setHunger(int hunger) {
-        actualStats.put(Stats.HUNGER, hunger);
-    }
-
-    void setHappiness(int happiness) {
-        actualStats.put(Stats.HAPPINESS, happiness);
-    }
-
-    void setHealth(int health) {
-        actualStats.put(Stats.HEALTH, health);
+    public void setViewBuilder(ViewBuilder viewBuilder) {
+        this.viewBuilder = viewBuilder;
     }
 }

@@ -1,39 +1,55 @@
 package tamagotchi.model;
 
-import javafx.scene.image.ImageView;
-import tamagotchi.view.ViewBuilder;
+import java.util.HashMap;
 
+import static tamagotchi.model.Stats.*;
 
-public class Activity extends ImageView implements Executive {
+public enum Activity {
+    FEED_WITH_MEAT(new HashMap<Stats, Integer>() {{
+        put(HUNGER, 20);
+    }}, "feed-meat.png"),
 
-    final private ActivityEnum ACTIVITY;
-    final private Pet PET;
-    private ViewBuilder viewBuilder;
+    FEED_WITH_BONES(new HashMap<Stats, Integer>() {{
+        put(HUNGER, 10);
+        put(HAPPINESS, 10);
+    }}, "feed-bones.png"),
 
-    public Activity(ActivityEnum activity, Pet pet) {
+    PLAY(new HashMap<Stats, Integer>() {{
+        put(HUNGER, -15);
+        put(HAPPINESS, 20);
+        put(HEALTH, -10);
+    }}, "ball.png"),
 
-        this.ACTIVITY = activity;
-        this.PET = pet;
+    GO_FOR_A_WALK(new HashMap<Stats, Integer>() {{
+        put(HUNGER, -10);
+        put(HAPPINESS, 20);
+        put(HEALTH, -5);
+    }}, "collar.png"),
 
+    HEAL(new HashMap<Stats, Integer>() {{
+        put(HEALTH, 30);
+        put(HAPPINESS, -10);
+    }}, "heal-fik.png"),
+
+    WASH(new HashMap<Stats, Integer>() {{
+        put(HEALTH, 10);
+        put(HAPPINESS, -25);
+    }}, "medicine.png");
+
+    final private HashMap<Stats, Integer> ACTIVITY_RESULT;
+    final private String activityButtonUrl;
+
+    Activity(HashMap<Stats, Integer> activityResult, String activityButtonUrl) {
+        this.ACTIVITY_RESULT = activityResult;
+        this.activityButtonUrl = activityButtonUrl;
     }
 
-    @Override
-    public void execute() {
-//        PET.updatePet(ACTIVITY);
-
-        if (PET.getPetState() != PetState.DEAD) {
-            PET.calculateStats(ACTIVITY);
-            PET.updatePet();
-
-        }
+    public HashMap<Stats, Integer> getResults() {
+        return ACTIVITY_RESULT;
     }
 
-    public ActivityEnum getActivity() {
-        return ACTIVITY;
+    public String getImage() {
+        return activityButtonUrl;
     }
 
-
-    public void setViewBuilder(ViewBuilder viewBuilder) {
-        this.viewBuilder = viewBuilder;
-    }
 }

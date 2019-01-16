@@ -1,49 +1,46 @@
 package tamagotchi.model;
 
-import tamagotchi.view.StatsView;
-
 public enum Stats {
-    HUNGER(100, 50, 15, -15, 8000, 10, StatsView.HUNGER_VIEW),
-    HAPPINESS(100, 50, 10, -10, 7000, 0, StatsView.HAPPINESS_VIEW),
-    HEALTH(100, 50, 15, -10, 10000, 5, StatsView.HEALTH_VIEW);
+    HUNGER(100, -15, 8000, "hunger.png", "hungry-dialogue.png"),
+    HAPPINESS(100, -10, 7000, "happiness.png", "sad-dialogue.png"),
+    HEALTH(100, -10, 10000, "health.png", "sick-dialogue.png");
 
     final private int INITIAL_VALUES;
-    final private int LOW;
-    final private int CRITICAL_VALUES;
     final private int POINTS_INCREASEMENT;
     final private int TIME_INTERVAL_MILISEC;
 
-    final private StatsView STAT_VIEW;
+    final private String statImgUrl;
 
-    Stats(int initialValue, int low, int criticalValue, int increasement, int timeInterval, int incresementWhenSleeping, StatsView statsView) {
+    final private String dialogueImgUrl;
+
+
+    Stats(int initialValue, int increasement, int timeInterval, String statImgUrl, String dialogueImgUrl) {
+
         this.INITIAL_VALUES = initialValue;
-        this.LOW = low;
-        this.CRITICAL_VALUES = criticalValue;
-        this.STAT_VIEW = statsView;
         this.POINTS_INCREASEMENT = increasement;
+        this.statImgUrl = statImgUrl;
+        this.dialogueImgUrl = dialogueImgUrl;
         this.TIME_INTERVAL_MILISEC = timeInterval;
     }
 
-    public int getLOW() {
-        return LOW;
-    }
-
-    public int getINITIAL_VALUES() {
+    public int getInitialValues() {
         return INITIAL_VALUES;
     }
 
-    public int getCRITICAL_VALUES() {
-        return CRITICAL_VALUES;
-    }
-    public StatsView getSTAT_VIEW() {
-        return STAT_VIEW;
+
+    public String getDialogueImgUrl() {
+        return dialogueImgUrl;
     }
 
-    public int getPOINTS_INCREASEMENT() {
+    public String getStatImgUrl() {
+        return statImgUrl;
+    }
+
+    public int getPointsIncreasement() {
         return POINTS_INCREASEMENT;
     }
 
-    public int getTIME_INTERVAL_MILISEC() {
+    public int getTimeInterval() {
         return TIME_INTERVAL_MILISEC;
     }
 
